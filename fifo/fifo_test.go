@@ -49,6 +49,9 @@ func TestEnqueue2(t *testing.T) {
 	if q.last.Data.(string) != "A" {
 		t.Fatal("Last Item should be A")
 	}
+	if q.last.next != q.first {
+		t.Fatalf("Last item next should be B not %v", q.first)
+	}
 }
 
 func TestEnqueue3(t *testing.T) {
@@ -73,6 +76,31 @@ func TestEnqueue3(t *testing.T) {
 	}
 	if q.last.Data.(string) != "A" {
 		t.Fatal("Last Item should be A")
+	}
+}
+
+func TestFull(t *testing.T) {
+	q := New(2)
+	a := &Item{
+		Data: "A",
+	}
+	b := &Item{
+		Data: "B",
+	}
+	c := &Item{
+		Data: "C",
+	}
+	if err := q.Enqueue(a); err != nil {
+		t.Fatal(err)
+	}
+	if err := q.Enqueue(b); err != nil {
+		t.Fatal(err)
+	}
+	if err := q.Enqueue(c); err != ErrStackIsFull {
+		t.Fatal(err)
+	}
+	if q.Size() != 2 {
+		t.Fatalf("Queue size should be 2 not %v", q.Size())
 	}
 }
 

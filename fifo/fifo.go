@@ -1,6 +1,12 @@
 package fifo
 
-import "fmt"
+import (
+	"errors"
+)
+
+var (
+	ErrStackIsFull = errors.New("stack is full")
+)
 
 // Item is a single representation of a data structure in the Queue
 type Item struct {
@@ -36,7 +42,7 @@ func (q *Queue) Enqueue(i *Item) error {
 		return nil
 	}
 	if q.Size() == q.c {
-		return fmt.Errorf("queue is full")
+		return ErrStackIsFull
 	}
 	q.first.next = i
 	q.first = i
