@@ -1,5 +1,7 @@
 package fifo
 
+import "fmt"
+
 // Item is a single representation of a data structure in the Queue
 type Item struct {
 	Data interface{}
@@ -26,35 +28,35 @@ func New(capacity int) *Queue {
 }
 
 // Enqueue add an item of data to the queue.
-func (q *Queue) Enqueue(i *Item) {
+func (q *Queue) Enqueue(i *Item) error {
 	if q.IsEmpty() {
 		q.first = i
 		q.last = i
 		q.n++
-		return
+		return nil
 	}
 	if q.Size() == q.c {
-		q.Dequeue()
+		return fmt.Errorf("queue is full")
 	}
 	q.first.next = i
 	q.first = i
 	q.n++
+	return nil
 }
 
-// Dequeue remove the least recently added item from the queue.
-func (q *Queue) Dequeue() {
+// Dequeue remove and returns the least recently added item from the queue.
+func (q *Queue) Dequeue() *Item {
 	if q.IsEmpty() {
-		return
+		return nil
 	}
+	last := q.last
 	// last item
 	if q.last.next == nil {
-		q.last = nil
 		q.first = nil
-		q.n = 0
-		return
 	}
 	q.last = q.last.next
 	q.n--
+	return last
 }
 
 // IsEmpty is the queue empty?

@@ -9,19 +9,10 @@ func TestIsEmpty(t *testing.T) {
 	}
 }
 
-func TestQueue(t *testing.T) {
+func TestEnqueue1(t *testing.T) {
 	q := New(3)
 	a := &Item{
 		Data: "A",
-	}
-	b := &Item{
-		Data: "B",
-	}
-	c := &Item{
-		Data: "C",
-	}
-	d := &Item{
-		Data: "D",
 	}
 	// Add A
 	q.Enqueue(a)
@@ -37,7 +28,17 @@ func TestQueue(t *testing.T) {
 	if q.last.Data.(string) != "A" {
 		t.Fatal("Last Item should be A")
 	}
-	// Add B
+}
+
+func TestEnqueue2(t *testing.T) {
+	q := New(3)
+	a := &Item{
+		Data: "A",
+	}
+	b := &Item{
+		Data: "B",
+	}
+	q.Enqueue(a)
 	q.Enqueue(b)
 	if q.Size() != 2 {
 		t.Fatal("It should be size 2")
@@ -48,51 +49,78 @@ func TestQueue(t *testing.T) {
 	if q.last.Data.(string) != "A" {
 		t.Fatal("Last Item should be A")
 	}
-	// Add C
+}
+
+func TestEnqueue3(t *testing.T) {
+	q := New(3)
+	a := &Item{
+		Data: "A",
+	}
+	b := &Item{
+		Data: "B",
+	}
+	c := &Item{
+		Data: "C",
+	}
+	q.Enqueue(a)
+	q.Enqueue(b)
 	q.Enqueue(c)
 	if q.Size() != 3 {
 		t.Fatal("It should be size 3")
 	}
-	q.Enqueue(d)
+	if q.first.Data.(string) != "C" {
+		t.Fatal("First Item should be C")
+	}
+	if q.last.Data.(string) != "A" {
+		t.Fatal("Last Item should be A")
+	}
+}
+
+func TestDequeue1(t *testing.T) {
+	q := New(3)
+	a := &Item{
+		Data: "A",
+	}
+	b := &Item{
+		Data: "B",
+	}
+	c := &Item{
+		Data: "C",
+	}
+	if err := q.Enqueue(a); err != nil {
+		t.Fatal(err)
+	}
+	if err := q.Enqueue(b); err != nil {
+		t.Fatal(err)
+	}
+	if err := q.Enqueue(c); err != nil {
+		t.Fatal(err)
+	}
 	if q.Size() != 3 {
 		t.Fatal("It should be size 3")
 	}
-	if q.first.Data.(string) != "D" {
-		t.Fatal("First Item should be D")
+	i := q.Dequeue()
+	if q.Size() != 2 {
+		t.Fatal("It should be size 2")
+	}
+	if q.first.Data.(string) != "C" {
+		t.Fatal("First Item should be C")
 	}
 	if q.last.Data.(string) != "B" {
 		t.Fatal("Last Item should be B")
 	}
-	// Remove
-	q.Dequeue()
-	if q.Size() != 2 {
-		t.Fatal("It should be size 2")
+	if i.Data != "A" {
+		t.Fatal("Dequeued Item should be A")
 	}
-	if q.first.Data.(string) != "D" {
-		t.Fatal("First Item should be D")
+	i = q.Dequeue()
+	if i.Data != "B" {
+		t.Fatal("Dequeued Item should be B")
 	}
-	if q.last.Data.(string) != "C" {
-		t.Fatal("Last Item should be C")
+	i = q.Dequeue()
+	if i.Data != "C" {
+		t.Fatal("Dequeued Item should be C")
 	}
-	q.Dequeue()
-	if q.Size() != 1 {
-		t.Fatal("It should be size 1")
-	}
-	if q.first.Data.(string) != "D" {
-		t.Fatal("First Item should be D")
-	}
-	if q.last.Data.(string) != "D" {
-		t.Fatal("Last Item should be D")
-	}
-	// Remove Last
-	q.Dequeue()
-	if q.Size() != 0 {
-		t.Fatal("It should be size 0")
-	}
-	if q.first != nil {
-		t.Fatal("First Item should be nil")
-	}
-	if q.last != nil {
-		t.Fatal("Last Item should be nil")
+	if !q.IsEmpty() {
+		t.Fatal("Queue should be empty")
 	}
 }
