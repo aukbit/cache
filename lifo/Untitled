@@ -1,0 +1,75 @@
+package lru
+
+type Item struct {
+	Key  string
+	Data interface{}
+	pre  *Item
+	next *Item
+}
+
+type Cache struct {
+	first *Item
+	last  *Item
+	// hash map with keys = items, values = location in linked list.
+	hash map[string]*Item
+	n    int
+	c    int
+}
+
+func New(capacity int) *Cache {
+	return &Cache{
+		c:    capacity,
+		hash: make(map[string]*Item),
+	}
+}
+
+func (c *Cache) Get(key string) *Item {
+	// When you access an element, delete it from the linked list and reinsert it at the beginning.
+	i, ok := c.hash[key]
+	if !ok {
+		return nil
+	}
+	// delete it from the linked list
+	c.remove(i)
+	// reinsert it at the beginning
+	c.first.next = i
+	i.pre = c.first.next
+	c.first = i
+	//
+	return i
+}
+
+func (c *Cache) Set(key string, d interface{}) error {
+	i := &Item{
+		Key:  key,
+		Data: d,
+	}
+	if c.IsEmpty() {
+		c.first = i
+	}
+	// When you access an element, delete it from the linked list and reinsert it at the beginning.
+
+	// When you remove an element, delete it from the end and remove it from the symbol table.
+	return nil
+}
+
+// Remove deletes and returns the item that was least recently accessed.
+// When you remove an element, delete it from the end and remove it from the symbol table.
+func (c *Cache) Remove(i *Item) {
+	// link next item to the previous item
+	if i.pre != nil {
+		i.pre.next = i.next
+	}
+	// link previous item to the next item
+	if i.next != nil {
+		i.next.pre = i.pre
+	}
+	// remove links
+	i.next = nil
+	i.pre = nil
+}
+
+
+func (c *Cache) IsEmpty() bool {
+	return c.first == nil && c.last == nil
+}
