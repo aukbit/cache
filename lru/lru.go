@@ -23,8 +23,7 @@ func New(capacity int) *Cache {
 	}
 }
 
-// Access operation inserts the item onto the data structure if it’s
-// not already present.
+// Access operation inserts the item onto the Cache if it’s not already present.
 func (c *Cache) Access(key string, data interface{}) *Item {
 	i := c.get(key)
 	if i == nil {
@@ -33,7 +32,7 @@ func (c *Cache) Access(key string, data interface{}) *Item {
 	return i
 }
 
-// get operation shifts the item to the first position on Cache is it’s already present.
+// get operation shifts the item to the first position on Cache if it’s already present.
 // Otherwise returns nil.
 func (c *Cache) get(key string) *Item {
 	// if not present returns nil
@@ -55,8 +54,9 @@ func (c *Cache) get(key string) *Item {
 	return i
 }
 
-// set operation inserts the item onto the data structure and removes the least
-// frequently used if cache is full
+// set operation inserts the item onto the Cache and removes the
+// least recently used if cache is full. The least recently used item is the one
+// in the last position.
 func (c *Cache) set(key string, data interface{}) *Item {
 	i := &Item{
 		Key:  key,
@@ -70,7 +70,7 @@ func (c *Cache) set(key string, data interface{}) *Item {
 		return i
 	}
 	if c.IsFull() {
-		// remove the least frequently used from the linked list which is the on in last
+		// remove the least recently used from the linked list which is the on in last
 		next, _ := c.delete(c.last)
 		delete(c.hash, c.last.Key)
 		c.last = next

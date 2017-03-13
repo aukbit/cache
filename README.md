@@ -15,12 +15,10 @@ to the stack is the first item to be removed.
 
 ## Least Recently Used (LRU)
 Discards the least recently used items first. This algorithm requires
-keeping track of what was used when, which is expensive if one wants to
-make sure the algorithm always discards the least recently used item.
-General implementations of this technique require keeping "age bits"
-for cache-lines and track the "Least Recently Used" cache-line based on age-bits.
+keeping track of what was used, Hint: Maintain the items in order of access
+in a doubly linked list, along with pointers to the first and last nodes.
 
-## Least-Frequently Used (LFU)
+## Least Frequently Used (LFU)
 Counts how often an item is needed. Those that are used least often are
 discarded first. This works very similar to LRU except that instead of
 storing the value of how recently a block was accessed, we store the value
