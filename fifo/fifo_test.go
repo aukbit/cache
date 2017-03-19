@@ -1,6 +1,10 @@
 package fifo
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/aukbit/cache"
+)
 
 func TestIsEmpty(t *testing.T) {
 	q := New(1)
@@ -113,5 +117,30 @@ func TestDequeue1(t *testing.T) {
 	}
 	if !q.IsEmpty() {
 		t.Fatal("Queue should be empty")
+	}
+}
+
+func TestIterator(t *testing.T) {
+	b := New(2)
+	if err := b.Enqueue("A"); err != nil {
+		t.Fatal(err)
+	}
+	i := b.Iterator()
+	if !i.HasNext() {
+		t.Fatal("Bag iterator should have first Item")
+	}
+	c, err := i.Next()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b.first.item != c {
+		t.Fatal("Bag iterator should have first Item")
+	}
+	if i.Remove() != cache.ErrUnsupportedOperation {
+		t.Fatal("Remove operatiion should not be implemented")
+	}
+	_, err = i.Next()
+	if err != cache.ErrNoSuchElement {
+		t.Fatal("Should not be any more items")
 	}
 }
