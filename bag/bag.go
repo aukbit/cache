@@ -6,16 +6,19 @@ var (
 	ErrBagIsFull = errors.New("bag is full")
 )
 
-// Item is a single representation of a data structure in the Bag
-type Item struct {
-	Data interface{}
-	next *Item
+// Item generic type of an item in this bag
+type Item interface{}
+
+// Node is a single representation of a data structure in the Bag
+type Node struct {
+	item Item
+	next *Node
 }
 
 // Bag is a list of data items..
 type Bag struct {
 	// first item in the bag
-	first *Item
+	first *Node
 	// number of items in the bag
 	n int
 	// capacity of the bag
@@ -30,17 +33,20 @@ func New(capacity int) *Bag {
 }
 
 // Add an item
-func (b *Bag) Add(i *Item) error {
+func (b *Bag) Add(i Item) error {
+	n := &Node{
+		item: i,
+	}
 	if b.IsEmpty() {
-		b.first = i
+		b.first = n
 		b.n++
 		return nil
 	}
 	if b.Size() == b.c {
 		return ErrBagIsFull
 	}
-	b.first.next = i
-	b.first = i
+	b.first.next = n
+	b.first = n
 	b.n++
 	return nil
 }
@@ -54,3 +60,7 @@ func (b *Bag) IsEmpty() bool {
 func (b *Bag) Size() int {
 	return b.n
 }
+
+// func (b *Bag) Iterator() Iterator {
+//
+// }

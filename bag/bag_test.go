@@ -11,10 +11,7 @@ func TestIsEmpty(t *testing.T) {
 
 func TestAdd1(t *testing.T) {
 	b := New(1)
-	a := &Item{
-		Data: "A",
-	}
-	if err := b.Add(a); err != nil {
+	if err := b.Add("A"); err != nil {
 		t.Fatal(err)
 	}
 	if b.Size() != 1 {
@@ -24,25 +21,16 @@ func TestAdd1(t *testing.T) {
 
 func TestAdd2(t *testing.T) {
 	b := New(2)
-	a := &Item{
-		Data: "A",
-	}
-	c := &Item{
-		Data: "C",
-	}
-	d := &Item{
-		Data: "D",
-	}
-	if err := b.Add(a); err != nil {
+	if err := b.Add("A"); err != nil {
 		t.Fatal(err)
 	}
-	if err := b.Add(c); err != nil {
+	if err := b.Add("B"); err != nil {
 		t.Fatal(err)
 	}
 	if b.Size() != 2 {
 		t.Fatalf("Bag size should be 2 not %v", b.Size())
 	}
-	if err := b.Add(d); err == nil {
+	if err := b.Add("C"); err == nil {
 		t.Fatal("Bag should be full")
 	}
 }
