@@ -14,7 +14,7 @@ type Item struct {
 	next *Item
 }
 
-// Queue is a list of data items.
+// Queue is a list of data items where the first item in is first out..
 type Queue struct {
 	// first item in the queue
 	first *Item

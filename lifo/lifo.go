@@ -13,11 +13,16 @@ type Item struct {
 	next *Item
 }
 
+// Stack is a list of data items where the last item in is first out..
 type Stack struct {
+	// first item in the stack
 	first *Item
-	last  *Item
-	n     int
-	c     int
+	// last item in the stack
+	last *Item
+	// number of items in the stack
+	n int
+	// capacity of the stack
+	c int
 }
 
 func New(capacity int) *Stack {
