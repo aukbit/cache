@@ -2,6 +2,8 @@ package lifo
 
 import (
 	"testing"
+
+	"github.com/aukbit/cache"
 )
 
 func TestIsEmpty(t *testing.T) {
@@ -62,5 +64,30 @@ func TestFull(t *testing.T) {
 	}
 	if s.Size() != 2 {
 		t.Fatalf("Stack size should be 2 not %v", s.Size())
+	}
+}
+
+func TestIterator(t *testing.T) {
+	b := New(2)
+	if err := b.Push("A"); err != nil {
+		t.Fatal(err)
+	}
+	i := b.Iterator()
+	if !i.HasNext() {
+		t.Fatal("Bag iterator should have first Item")
+	}
+	c, err := i.Next()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b.first.item != c {
+		t.Fatal("Bag iterator should have first Item")
+	}
+	if i.Remove() != cache.ErrUnsupportedOperation {
+		t.Fatal("Remove operation should not be implemented")
+	}
+	_, err = i.Next()
+	if err != cache.ErrNoSuchElement {
+		t.Fatal("Should not be any more items")
 	}
 }
