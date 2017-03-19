@@ -11,42 +11,32 @@ func TestIsEmpty(t *testing.T) {
 
 func TestEnqueue1(t *testing.T) {
 	q := New(3)
-	a := &Item{
-		Data: "A",
-	}
-	// Add A
-	q.Enqueue(a)
+	q.Enqueue("A")
 	if q.IsEmpty() {
 		t.Fatal("It should not be empty")
 	}
 	if q.Size() != 1 {
 		t.Fatal("It should be size 1")
 	}
-	if q.first.Data.(string) != "A" {
+	if q.first.item != "A" {
 		t.Fatal("First Item should be A")
 	}
-	if q.last.Data.(string) != "A" {
+	if q.last.item != "A" {
 		t.Fatal("Last Item should be A")
 	}
 }
 
 func TestEnqueue2(t *testing.T) {
 	q := New(3)
-	a := &Item{
-		Data: "A",
-	}
-	b := &Item{
-		Data: "B",
-	}
-	q.Enqueue(a)
-	q.Enqueue(b)
+	q.Enqueue("A")
+	q.Enqueue("B")
 	if q.Size() != 2 {
 		t.Fatal("It should be size 2")
 	}
-	if q.first.Data.(string) != "B" {
+	if q.first.item != "B" {
 		t.Fatal("First Item should be B")
 	}
-	if q.last.Data.(string) != "A" {
+	if q.last.item != "A" {
 		t.Fatal("Last Item should be A")
 	}
 	if q.last.next != q.first {
@@ -56,47 +46,29 @@ func TestEnqueue2(t *testing.T) {
 
 func TestEnqueue3(t *testing.T) {
 	q := New(3)
-	a := &Item{
-		Data: "A",
-	}
-	b := &Item{
-		Data: "B",
-	}
-	c := &Item{
-		Data: "C",
-	}
-	q.Enqueue(a)
-	q.Enqueue(b)
-	q.Enqueue(c)
+	q.Enqueue("A")
+	q.Enqueue("B")
+	q.Enqueue("C")
 	if q.Size() != 3 {
 		t.Fatal("It should be size 3")
 	}
-	if q.first.Data.(string) != "C" {
+	if q.first.item != "C" {
 		t.Fatal("First Item should be C")
 	}
-	if q.last.Data.(string) != "A" {
+	if q.last.item != "A" {
 		t.Fatal("Last Item should be A")
 	}
 }
 
 func TestFull(t *testing.T) {
 	q := New(2)
-	a := &Item{
-		Data: "A",
-	}
-	b := &Item{
-		Data: "B",
-	}
-	c := &Item{
-		Data: "C",
-	}
-	if err := q.Enqueue(a); err != nil {
+	if err := q.Enqueue("A"); err != nil {
 		t.Fatal(err)
 	}
-	if err := q.Enqueue(b); err != nil {
+	if err := q.Enqueue("B"); err != nil {
 		t.Fatal(err)
 	}
-	if err := q.Enqueue(c); err != ErrStackIsFull {
+	if err := q.Enqueue("C"); err != ErrStackIsFull {
 		t.Fatal(err)
 	}
 	if q.Size() != 2 {
@@ -106,22 +78,13 @@ func TestFull(t *testing.T) {
 
 func TestDequeue1(t *testing.T) {
 	q := New(3)
-	a := &Item{
-		Data: "A",
-	}
-	b := &Item{
-		Data: "B",
-	}
-	c := &Item{
-		Data: "C",
-	}
-	if err := q.Enqueue(a); err != nil {
+	if err := q.Enqueue("A"); err != nil {
 		t.Fatal(err)
 	}
-	if err := q.Enqueue(b); err != nil {
+	if err := q.Enqueue("B"); err != nil {
 		t.Fatal(err)
 	}
-	if err := q.Enqueue(c); err != nil {
+	if err := q.Enqueue("C"); err != nil {
 		t.Fatal(err)
 	}
 	if q.Size() != 3 {
@@ -131,21 +94,21 @@ func TestDequeue1(t *testing.T) {
 	if q.Size() != 2 {
 		t.Fatal("It should be size 2")
 	}
-	if q.first.Data.(string) != "C" {
+	if q.first.item != "C" {
 		t.Fatal("First Item should be C")
 	}
-	if q.last.Data.(string) != "B" {
+	if q.last.item != "B" {
 		t.Fatal("Last Item should be B")
 	}
-	if i.Data != "A" {
+	if i != "A" {
 		t.Fatal("Dequeued Item should be A")
 	}
 	i = q.Dequeue()
-	if i.Data != "B" {
+	if i != "B" {
 		t.Fatal("Dequeued Item should be B")
 	}
 	i = q.Dequeue()
-	if i.Data != "C" {
+	if i != "C" {
 		t.Fatal("Dequeued Item should be C")
 	}
 	if !q.IsEmpty() {

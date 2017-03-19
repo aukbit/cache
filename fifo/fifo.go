@@ -8,19 +8,22 @@ var (
 	ErrStackIsFull = errors.New("stack is full")
 )
 
-// Item is a single representation of a data structure in the Queue
-type Item struct {
-	Data interface{}
-	next *Item
+// Item generic type of an item in this bag
+type Item interface{}
+
+// Node is a single representation of a data structure in the Queue
+type Node struct {
+	item Item
+	next *Node
 }
 
 // Queue is a list of data items where the first item in is first out..
 type Queue struct {
-	// first item in the queue
-	first *Item
-	// last item in the queue
-	last *Item
-	// number of items in the queue
+	// first node in the queue
+	first *Node
+	// last node in the queue
+	last *Node
+	// number of nodes in the queue
 	n int
 	// capacity of the queue
 	c int
@@ -34,35 +37,38 @@ func New(capacity int) *Queue {
 }
 
 // Enqueue add an item of data to the queue.
-func (q *Queue) Enqueue(i *Item) error {
+func (q *Queue) Enqueue(i Item) error {
+	n := &Node{
+		item: i,
+	}
 	if q.IsEmpty() {
-		q.first = i
-		q.last = i
+		q.first = n
+		q.last = n
 		q.n++
 		return nil
 	}
 	if q.Size() == q.c {
 		return ErrStackIsFull
 	}
-	q.first.next = i
-	q.first = i
+	q.first.next = n
+	q.first = n
 	q.n++
 	return nil
 }
 
 // Dequeue remove and returns the least recently added item from the queue.
-func (q *Queue) Dequeue() *Item {
+func (q *Queue) Dequeue() Item {
 	if q.IsEmpty() {
 		return nil
 	}
 	last := q.last
-	// last item
+	// last node
 	if q.last.next == nil {
 		q.first = nil
 	}
 	q.last = q.last.next
 	q.n--
-	return last
+	return last.item
 }
 
 // IsEmpty is the queue empty?
