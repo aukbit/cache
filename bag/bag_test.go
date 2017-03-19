@@ -56,7 +56,7 @@ func TestIterator(t *testing.T) {
 		t.Fatal("Bag iterator should have first Item")
 	}
 	if i.Remove() != cache.ErrUnsupportedOperation {
-		t.Fatal("Remove operatiion should not be implemented")
+		t.Fatal("Remove operation should not be implemented")
 	}
 	_, err = i.Next()
 	if err != cache.ErrNoSuchElement {
