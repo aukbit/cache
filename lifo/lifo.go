@@ -8,18 +8,22 @@ var (
 	ErrStackIsFull = errors.New("stack is full")
 )
 
-type Item struct {
-	Data interface{}
-	next *Item
+// Item generic type of an item in the Stack
+type Item interface{}
+
+// Node is a single representation of a data structure in the Stack
+type Node struct {
+	item Item
+	next *Node
 }
 
-// Stack is a list of data items where the last item in is first out..
+// Stack is a list of data items where the last item in is the first out..
 type Stack struct {
-	// first item in the stack
-	first *Item
-	// last item in the stack
-	last *Item
-	// number of items in the stack
+	// first node in the stack
+	first *Node
+	// last node in the stack
+	last *Node
+	// number of nodes in the stack
 	n int
 	// capacity of the stack
 	c int
@@ -31,24 +35,27 @@ func New(capacity int) *Stack {
 	}
 }
 
-func (s *Stack) Push(i *Item) error {
+func (s *Stack) Push(i Item) error {
+	n := &Node{
+		item: i,
+	}
 	if s.IsEmpty() {
-		s.first = i
-		s.last = i
+		s.first = n
+		s.last = n
 		s.n++
 		return nil
 	}
 	if s.Size() == s.c {
 		return ErrStackIsFull
 	}
-	s.first.next = i
-	s.first = i
+	s.first.next = n
+	s.first = n
 	s.n++
 	return nil
 }
 
-func (s *Stack) Pop() *Item {
-	return s.first
+func (s *Stack) Pop() Item {
+	return s.first.item
 }
 
 func (s *Stack) IsEmpty() bool {

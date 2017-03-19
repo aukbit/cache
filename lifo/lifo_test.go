@@ -13,10 +13,7 @@ func TestIsEmpty(t *testing.T) {
 
 func TestPush1(t *testing.T) {
 	s := New(1)
-	a := &Item{
-		Data: "A",
-	}
-	if err := s.Push(a); err != nil {
+	if err := s.Push("A"); err != nil {
 		t.Fatal(err)
 	}
 	if s.Size() != 1 {
@@ -26,29 +23,23 @@ func TestPush1(t *testing.T) {
 
 func TestPush2(t *testing.T) {
 	s := New(2)
-	a := &Item{
-		Data: "A",
-	}
-	b := &Item{
-		Data: "B",
-	}
-	if err := s.Push(a); err != nil {
+	if err := s.Push("A"); err != nil {
 		t.Fatal(err)
 	}
-	if s.first.Data != "A" {
-		t.Fatalf("First item should be A not %v", s.first.Data)
+	if s.first.item != "A" {
+		t.Fatalf("First item should be A not %v", s.first.item)
 	}
-	if s.last.Data != "A" {
-		t.Fatalf("Last item should be A not %v", s.last.Data)
+	if s.last.item != "A" {
+		t.Fatalf("Last item should be A not %v", s.last.item)
 	}
-	if err := s.Push(b); err != nil {
+	if err := s.Push("B"); err != nil {
 		t.Fatal(err)
 	}
-	if s.first.Data != "B" {
-		t.Fatalf("First item should be B not %v", s.first.Data)
+	if s.first.item != "B" {
+		t.Fatalf("First item should be B not %v", s.first.item)
 	}
-	if s.last.Data != "A" {
-		t.Fatalf("Last item should be A not %v", s.last.Data)
+	if s.last.item != "A" {
+		t.Fatalf("Last item should be A not %v", s.last.item)
 	}
 	if s.last.next != s.first {
 		t.Fatalf("Last item next should be B not %v", s.first)
@@ -60,22 +51,13 @@ func TestPush2(t *testing.T) {
 
 func TestFull(t *testing.T) {
 	s := New(2)
-	a := &Item{
-		Data: "A",
-	}
-	b := &Item{
-		Data: "B",
-	}
-	c := &Item{
-		Data: "C",
-	}
-	if err := s.Push(a); err != nil {
+	if err := s.Push("A"); err != nil {
 		t.Fatal(err)
 	}
-	if err := s.Push(b); err != nil {
+	if err := s.Push("B"); err != nil {
 		t.Fatal(err)
 	}
-	if err := s.Push(c); err != ErrStackIsFull {
+	if err := s.Push("C"); err != ErrStackIsFull {
 		t.Fatal(err)
 	}
 	if s.Size() != 2 {
