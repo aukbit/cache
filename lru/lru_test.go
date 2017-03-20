@@ -1,6 +1,10 @@
 package lru
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/aukbit/cache"
+)
 
 func TestIsEmpty(t *testing.T) {
 	c := New(1)
@@ -218,5 +222,28 @@ func TestAccess(t *testing.T) {
 	}
 	if c.last.pre != nil {
 		t.Fatalf("pre should be nil got %v", c.last.pre)
+	}
+}
+
+func TestIterator(t *testing.T) {
+	b := New(2)
+	b.Access("A", 1)
+	i := b.Iterator()
+	if !i.HasNext() {
+		t.Fatal("Cache iterator should have first Item")
+	}
+	c, err := i.Next()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if b.first.item != c {
+		t.Fatal("Cache iterator should have first Item")
+	}
+	if i.Remove() != cache.ErrUnsupportedOperation {
+		t.Fatal("Remove operation should not be implemented")
+	}
+	_, err = i.Next()
+	if err != cache.ErrNoSuchElement {
+		t.Fatal("Should not be any more items")
 	}
 }
