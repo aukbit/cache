@@ -1,13 +1,7 @@
 package bag
 
 import (
-	"errors"
-
 	"github.com/aukbit/cache"
-)
-
-var (
-	ErrBagIsFull = errors.New("bag is full")
 )
 
 // Item generic type of an item in this bag
@@ -25,15 +19,11 @@ type Bag struct {
 	first *Node
 	// number of items in the bag
 	n int
-	// capacity of the bag
-	c int
 }
 
 // New create a new Bag
-func New(capacity int) *Bag {
-	return &Bag{
-		c: capacity,
-	}
+func New() *Bag {
+	return &Bag{}
 }
 
 // Add an item
@@ -45,9 +35,6 @@ func (b *Bag) Add(i Item) error {
 		b.first = n
 		b.n++
 		return nil
-	}
-	if b.Size() == b.c {
-		return ErrBagIsFull
 	}
 	b.first.next = n
 	b.first = n

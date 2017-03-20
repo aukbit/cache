@@ -7,14 +7,14 @@ import (
 )
 
 func TestIsEmpty(t *testing.T) {
-	b := New(1)
+	b := New()
 	if !b.IsEmpty() {
 		t.Fatal("Bag should be empty")
 	}
 }
 
 func TestAdd1(t *testing.T) {
-	b := New(1)
+	b := New()
 	if err := b.Add("A"); err != nil {
 		t.Fatal(err)
 	}
@@ -24,7 +24,7 @@ func TestAdd1(t *testing.T) {
 }
 
 func TestAdd2(t *testing.T) {
-	b := New(2)
+	b := New()
 	if err := b.Add("A"); err != nil {
 		t.Fatal(err)
 	}
@@ -34,13 +34,10 @@ func TestAdd2(t *testing.T) {
 	if b.Size() != 2 {
 		t.Fatalf("Bag size should be 2 not %v", b.Size())
 	}
-	if err := b.Add("C"); err == nil {
-		t.Fatal("Bag should be full")
-	}
 }
 
 func TestIterator(t *testing.T) {
-	b := New(2)
+	b := New()
 	if err := b.Add("A"); err != nil {
 		t.Fatal(err)
 	}
