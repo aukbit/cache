@@ -228,22 +228,32 @@ func TestAccess(t *testing.T) {
 func TestIterator(t *testing.T) {
 	b := New(2)
 	b.Access("A", 1)
+	b.Access("B", 2)
 	i := b.Iterator()
 	if !i.HasNext() {
-		t.Fatal("Cache iterator should have first Item")
+		t.Fatal("Cache iterator should have next item")
 	}
 	c, err := i.Next()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if b.first.item != c {
-		t.Fatal("Cache iterator should have first Item")
+	if c != 1 {
+		t.Fatalf("Iterator item should be 1 got %v", c)
+	}
+	if !i.HasNext() {
+		t.Fatal("Cache iterator should have next item")
+	}
+	c, err = i.Next()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c != 2 {
+		t.Fatalf("Iterator item should be 2 got %v", c)
+	}
+	if i.HasNext() {
+		t.Fatal("Should not be any more items")
 	}
 	if i.Remove() != cache.ErrUnsupportedOperation {
 		t.Fatal("Remove operation should not be implemented")
-	}
-	_, err = i.Next()
-	if err != cache.ErrNoSuchElement {
-		t.Fatal("Should not be any more items")
 	}
 }
