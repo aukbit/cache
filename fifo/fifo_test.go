@@ -127,14 +127,14 @@ func TestIterator(t *testing.T) {
 	}
 	i := b.Iterator()
 	if !i.HasNext() {
-		t.Fatal("Bag iterator should have first Item")
+		t.Fatal("Queue iterator should have first Item")
 	}
 	c, err := i.Next()
 	if err != nil {
 		t.Fatal(err)
 	}
 	if b.first.item != c {
-		t.Fatal("Bag iterator should have first Item")
+		t.Fatal("Queue iterator should have first Item")
 	}
 	if i.Remove() != cache.ErrUnsupportedOperation {
 		t.Fatal("Remove operation should not be implemented")
