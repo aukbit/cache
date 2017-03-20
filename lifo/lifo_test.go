@@ -28,23 +28,17 @@ func TestPush2(t *testing.T) {
 	if err := s.Push("A"); err != nil {
 		t.Fatal(err)
 	}
-	if s.first.item != "A" {
-		t.Fatalf("First item should be A not %v", s.first.item)
-	}
 	if s.last.item != "A" {
 		t.Fatalf("Last item should be A not %v", s.last.item)
 	}
 	if err := s.Push("B"); err != nil {
 		t.Fatal(err)
 	}
-	if s.first.item != "B" {
-		t.Fatalf("First item should be B not %v", s.first.item)
+	if s.last.item != "B" {
+		t.Fatalf("Last item should be B not %v", s.last.item)
 	}
-	if s.last.item != "A" {
-		t.Fatalf("Last item should be A not %v", s.last.item)
-	}
-	if s.last.next != s.first {
-		t.Fatalf("Last item next should be B not %v", s.first)
+	if s.last.next.item != "A" {
+		t.Fatalf("Last item next should be A not %v", s.last.next.item)
 	}
 	if s.Size() != 2 {
 		t.Fatalf("Stack size should be 2 not %v", s.Size())
@@ -67,27 +61,76 @@ func TestFull(t *testing.T) {
 	}
 }
 
+func TestPop(t *testing.T) {
+	q := New(3)
+	if err := q.Push("A"); err != nil {
+		t.Fatal(err)
+	}
+	if err := q.Push("B"); err != nil {
+		t.Fatal(err)
+	}
+	if err := q.Push("C"); err != nil {
+		t.Fatal(err)
+	}
+	if q.Size() != 3 {
+		t.Fatal("It should be size 3")
+	}
+	i := q.Pop()
+	if i != "C" {
+		t.Fatalf("Pop item should be C got %v", i)
+	}
+	if q.Size() != 2 {
+		t.Fatal("It should be size 2")
+	}
+	if q.last.item != "B" {
+		t.Fatalf("Last item should be B got %v", q.last.item)
+	}
+	i = q.Pop()
+	if i != "B" {
+		t.Fatalf("Pop item should be B got %v", i)
+	}
+	i = q.Pop()
+	if i != "A" {
+		t.Fatalf("Pop item should be A got %v", i)
+	}
+	if !q.IsEmpty() {
+		t.Fatal("Stack should be empty")
+	}
+}
+
 func TestIterator(t *testing.T) {
 	b := New(2)
 	if err := b.Push("A"); err != nil {
 		t.Fatal(err)
 	}
+	if err := b.Push("B"); err != nil {
+		t.Fatal(err)
+	}
 	i := b.Iterator()
 	if !i.HasNext() {
-		t.Fatal("Stack iterator should have first Item")
+		t.Fatal("Stack iterator should have next item")
 	}
 	c, err := i.Next()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if b.first.item != c {
-		t.Fatal("Stack iterator should have first Item")
+	if c != "B" {
+		t.Fatalf("Iterator item should be B got %v", c)
+	}
+	if !i.HasNext() {
+		t.Fatal("Stack iterator should have next item")
+	}
+	c, err = i.Next()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c != "A" {
+		t.Fatalf("Iterator item should be A got %v", c)
+	}
+	if i.HasNext() {
+		t.Fatal("Should not be any more items")
 	}
 	if i.Remove() != cache.ErrUnsupportedOperation {
 		t.Fatal("Remove operation should not be implemented")
-	}
-	_, err = i.Next()
-	if err != cache.ErrNoSuchElement {
-		t.Fatal("Should not be any more items")
 	}
 }

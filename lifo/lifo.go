@@ -21,8 +21,6 @@ type Node struct {
 
 // Stack is a list of data items where the last item in is the first out..
 type Stack struct {
-	// first node in the stack
-	first *Node
 	// last node in the stack
 	last *Node
 	// number of nodes in the stack
@@ -38,30 +36,30 @@ func New(capacity int) *Stack {
 }
 
 func (s *Stack) Push(i Item) error {
-	n := &Node{
-		item: i,
-	}
-	if s.IsEmpty() {
-		s.first = n
-		s.last = n
-		s.n++
-		return nil
-	}
 	if s.Size() == s.c {
 		return ErrStackIsFull
 	}
-	s.first.next = n
-	s.first = n
+	n := &Node{
+		item: i,
+		next: s.last,
+	}
+	s.last = n
 	s.n++
 	return nil
 }
 
 func (s *Stack) Pop() Item {
-	return s.first.item
+	if s.IsEmpty() {
+		return nil
+	}
+	item := s.last.item
+	s.last = s.last.next
+	s.n--
+	return item
 }
 
 func (s *Stack) IsEmpty() bool {
-	return s.first == nil && s.last == nil
+	return s.last == nil
 }
 
 func (s *Stack) Size() int {
@@ -71,7 +69,7 @@ func (s *Stack) Size() int {
 // Iterator returns an iterator to this bag that iterates through the items
 // in LIFO order.
 func (s *Stack) Iterator() *Iterator {
-	return newIterator(s.first)
+	return newIterator(s.last)
 }
 
 // Iterator represents an iterator over a collection.
