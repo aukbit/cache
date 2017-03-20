@@ -41,22 +41,34 @@ func TestIterator(t *testing.T) {
 	if err := b.Add("A"); err != nil {
 		t.Fatal(err)
 	}
+	if err := b.Add("B"); err != nil {
+		t.Fatal(err)
+	}
 	i := b.Iterator()
 	if !i.HasNext() {
-		t.Fatal("Bag iterator should have first Item")
+		t.Fatal("Bag iterator should have next item")
 	}
 	c, err := i.Next()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if b.first.item != c {
-		t.Fatal("Bag iterator should have first Item")
+	if c != "B" {
+		t.Fatalf("Iterator item should be B got %v", c)
+	}
+	if !i.HasNext() {
+		t.Fatal("Bag iterator should have next item")
+	}
+	c, err = i.Next()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c != "A" {
+		t.Fatalf("Iterator item should be A got %v", c)
+	}
+	if i.HasNext() {
+		t.Fatal("Should not be any more items")
 	}
 	if i.Remove() != cache.ErrUnsupportedOperation {
 		t.Fatal("Remove operation should not be implemented")
-	}
-	_, err = i.Next()
-	if err != cache.ErrNoSuchElement {
-		t.Fatal("Should not be any more items")
 	}
 }

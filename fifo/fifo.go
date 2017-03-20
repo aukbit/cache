@@ -40,6 +40,9 @@ func New(capacity int) *Queue {
 
 // Enqueue add an item of data to the queue.
 func (q *Queue) Enqueue(i Item) error {
+	if q.Size() == q.c {
+		return ErrStackIsFull
+	}
 	n := &Node{
 		item: i,
 	}
@@ -49,11 +52,8 @@ func (q *Queue) Enqueue(i Item) error {
 		q.n++
 		return nil
 	}
-	if q.Size() == q.c {
-		return ErrStackIsFull
-	}
-	q.first.next = n
-	q.first = n
+	q.last.next = n
+	q.last = n
 	q.n++
 	return nil
 }
@@ -63,14 +63,14 @@ func (q *Queue) Dequeue() Item {
 	if q.IsEmpty() {
 		return nil
 	}
-	last := q.last
 	// last node
-	if q.last.next == nil {
-		q.first = nil
+	if q.first.next == nil {
+		q.last = nil
 	}
-	q.last = q.last.next
+	item := q.first.item
+	q.first = q.first.next
 	q.n--
-	return last.item
+	return item
 }
 
 // IsEmpty is the queue empty?

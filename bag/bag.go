@@ -30,13 +30,8 @@ func New() *Bag {
 func (b *Bag) Add(i Item) error {
 	n := &Node{
 		item: i,
+		next: b.first,
 	}
-	if b.IsEmpty() {
-		b.first = n
-		b.n++
-		return nil
-	}
-	b.first.next = n
 	b.first = n
 	b.n++
 	return nil
@@ -83,7 +78,9 @@ func (i *Iterator) Next() (Item, error) {
 	if !i.HasNext() {
 		return nil, cache.ErrNoSuchElement
 	}
+	// fmt.Println(i.current.item)
 	item := i.current.item
 	i.current = i.current.next
+	// fmt.Println(i.current.next)
 	return item, nil
 }
