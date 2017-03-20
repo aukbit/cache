@@ -130,7 +130,7 @@ func (c *Cache) Size() int {
 
 // Iterator returns an iterator to this lru that iterates through the items
 // in LRU order.
-func (c *Cache) Iterator() Iterator {
+func (c *Cache) Iterator() *Iterator {
 	return newIterator(c.last)
 }
 
@@ -139,8 +139,8 @@ type Iterator struct {
 	current *Node
 }
 
-func newIterator(n *Node) Iterator {
-	return Iterator{
+func newIterator(n *Node) *Iterator {
+	return &Iterator{
 		current: n,
 	}
 }

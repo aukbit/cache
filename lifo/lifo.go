@@ -70,7 +70,7 @@ func (s *Stack) Size() int {
 
 // Iterator returns an iterator to this bag that iterates through the items
 // in LIFO order.
-func (s *Stack) Iterator() Iterator {
+func (s *Stack) Iterator() *Iterator {
 	return newIterator(s.first)
 }
 
@@ -79,8 +79,8 @@ type Iterator struct {
 	current *Node
 }
 
-func newIterator(n *Node) Iterator {
-	return Iterator{
+func newIterator(n *Node) *Iterator {
+	return &Iterator{
 		current: n,
 	}
 }

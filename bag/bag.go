@@ -53,7 +53,7 @@ func (b *Bag) Size() int {
 }
 
 // Iterator returns an iterator to this bag that iterates through the items in arbitrary order.
-func (b *Bag) Iterator() Iterator {
+func (b *Bag) Iterator() *Iterator {
 	return newIterator(b.first)
 }
 
@@ -62,8 +62,8 @@ type Iterator struct {
 	current *Node
 }
 
-func newIterator(n *Node) Iterator {
-	return Iterator{
+func newIterator(n *Node) *Iterator {
+	return &Iterator{
 		current: n,
 	}
 }
