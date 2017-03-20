@@ -68,7 +68,8 @@ func (s *Stack) Size() int {
 	return s.n
 }
 
-// Iterator returns an iterator to this bag that iterates through the items in arbitrary order.
+// Iterator returns an iterator to this bag that iterates through the items
+// in LIFO order.
 func (s *Stack) Iterator() Iterator {
 	return newIterator(s.first)
 }

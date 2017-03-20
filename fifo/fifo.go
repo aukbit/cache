@@ -88,7 +88,8 @@ func (q *Queue) Capacity() int {
 	return q.c
 }
 
-// Iterator returns an iterator to this bag that iterates through the items in arbitrary order.
+// Iterator returns an iterator to this bag that iterates through the items
+// in FIFO order.
 func (q *Queue) Iterator() Iterator {
 	return newIterator(q.first)
 }
