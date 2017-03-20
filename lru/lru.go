@@ -1,17 +1,21 @@
 package lru
 
-type Item struct {
-	Key  string
-	Data interface{}
-	pre  *Item
-	next *Item
+// Item generic type of an item in the Cache
+type Item interface{}
+
+// Node is a single representation of a data structure in the Cache
+type Node struct {
+	key  string
+	item Item
+	pre  *Node
+	next *Node
 }
 
 type Cache struct {
-	first *Item
-	last  *Item
-	// hash map with keys = items, values = location in linked list.
-	hash map[string]*Item
+	first *Node
+	last  *Node
+	// hash map with keys = nodes, values = location in linked list.
+	hash map[string]*Node
 	n    int
 	c    int
 }
@@ -19,92 +23,95 @@ type Cache struct {
 func New(capacity int) *Cache {
 	return &Cache{
 		c:    capacity,
-		hash: make(map[string]*Item),
+		hash: make(map[string]*Node),
 	}
 }
 
 // Access operation inserts the item onto the Cache if it’s not already present.
-func (c *Cache) Access(key string, data interface{}) *Item {
-	i := c.get(key)
-	if i == nil {
-		i = c.set(key, data)
+func (c *Cache) Access(key string, i Item) {
+	item := c.get(key)
+	if item == nil {
+		c.set(key, i)
 	}
-	return i
+}
+
+// Remove operation deletes and returns the item that was least
+// recently accessed
+func (c *Cache) Remove() Item {
+	// last position in the cache cointains the item least recently used
+	next := c.last.next
+	c.detach(c.last)
+	delete(c.hash, c.last.key)
+	c.last = next
+	c.n--
+	return c.last.item
 }
 
 // get operation shifts the item to the first position on Cache if it’s already present.
 // Otherwise returns nil.
-func (c *Cache) get(key string) *Item {
+func (c *Cache) get(key string) Item {
 	// if not present returns nil
-	i, ok := c.hash[key]
+	n, ok := c.hash[key]
 	if !ok {
 		return nil
 	}
-	if c.Size() == 1 || c.first == i {
-		return i
+	if c.Size() == 1 || c.first == n {
+		return n.item
 	}
-	// delete item from the linked list
-	next, _ := c.delete(i)
-	if c.last == i {
+	// detach item from the linked list
+	next := n.next
+	c.detach(n)
+	if c.last == n {
 		c.last = next
 	}
-	// reinsert item at the beginning of the linked list
-	c.setFirst(i)
-	//
-	return i
+	// reinsert node at the beginning of the linked list
+	c.attach(n)
+	return n.item
 }
 
 // set operation inserts the item onto the Cache and removes the
 // least recently used if cache is full. The least recently used item is the one
 // in the last position.
-func (c *Cache) set(key string, data interface{}) *Item {
-	i := &Item{
-		Key:  key,
-		Data: data,
+func (c *Cache) set(key string, i Item) {
+	n := &Node{
+		key:  key,
+		item: i,
 	}
 	if c.IsEmpty() {
-		c.first = i
-		c.last = i
-		c.hash[key] = i
+		c.first = n
+		c.last = n
+		c.hash[key] = n
 		c.n++
-		return i
+		return
 	}
 	if c.IsFull() {
-		// remove the least recently used from the linked list which is the on in last
-		next, _ := c.delete(c.last)
-		delete(c.hash, c.last.Key)
-		c.last = next
-		c.n--
+		c.Remove()
 	}
-	c.setFirst(i)
-	c.hash[key] = i
+	c.attach(n)
+	c.hash[key] = n
 	c.n++
-	return i
 }
 
-// setFirst adds item has first in cache
-func (c *Cache) setFirst(i *Item) {
-	c.first.next = i
-	i.pre = c.first
-	c.first = i
+// attach operation adds node has first in cache
+func (c *Cache) attach(n *Node) {
+	c.first.next = n
+	n.pre = c.first
+	c.first = n
 }
 
-// Delete deletes the item from linked list
-func (c *Cache) delete(i *Item) (next *Item, pre *Item) {
-	// link next item to the previous item
-	if i.pre != nil {
-		i.pre.next = i.next
+// detach a node from the linked list
+func (*Cache) detach(n *Node) {
+	// link next node to the previous node
+	if n.pre != nil {
+		n.pre.next = n.next
 	}
-	// link previous item to the next item
-	if i.next != nil {
-		i.next.pre = i.pre
+	// link previous node to the next node
+	if n.next != nil {
+		n.next.pre = n.pre
 	}
-	next = i.next
-	pre = i.pre
 	// remove links
-	i.next = nil
-	i.pre = nil
-	return next, pre
+	n.next = nil
+	n.pre = nil
 }
 
 func (c *Cache) IsEmpty() bool {

@@ -12,17 +12,17 @@ func TestIsEmpty(t *testing.T) {
 func TestSet(t *testing.T) {
 	c := New(1)
 	c.set("A", 1)
-	if c.first.Key != "A" {
-		t.Fatalf("First Key should be A got %v", c.first.Key)
+	if c.first.key != "A" {
+		t.Fatalf("First Key should be A got %v", c.first.key)
 	}
-	if c.first.Data != 1 {
-		t.Fatalf("First Data should be 1 got %v", c.first.Data)
+	if c.first.item != 1 {
+		t.Fatalf("First Data should be 1 got %v", c.first.item)
 	}
-	if c.last.Key != "A" {
-		t.Fatalf("Last Key should be A got %v", c.last.Key)
+	if c.last.key != "A" {
+		t.Fatalf("Last Key should be A got %v", c.last.key)
 	}
-	if c.last.Data != 1 {
-		t.Fatalf("Last Data should be 1 got %v", c.last.Data)
+	if c.last.item != 1 {
+		t.Fatalf("Last Data should be 1 got %v", c.last.item)
 	}
 	if c.Size() != 1 {
 		t.Fatalf("Size should be 1 got %v", c.Size())
@@ -36,17 +36,17 @@ func TestSet2(t *testing.T) {
 	c := New(2)
 	c.set("A", 1)
 	c.set("B", 2)
-	if c.first.Key != "B" {
-		t.Fatalf("First Key should be B got %v", c.first.Key)
+	if c.first.key != "B" {
+		t.Fatalf("First Key should be B got %v", c.first.key)
 	}
-	if c.first.Data != 2 {
-		t.Fatalf("First Data should be 2 got %v", c.first.Data)
+	if c.first.item != 2 {
+		t.Fatalf("First Data should be 2 got %v", c.first.item)
 	}
-	if c.last.Key != "A" {
-		t.Fatalf("Last Key should be A got %v", c.last.Key)
+	if c.last.key != "A" {
+		t.Fatalf("Last Key should be A got %v", c.last.key)
 	}
-	if c.last.Data != 1 {
-		t.Fatalf("Last Data should be 1 got %v", c.last.Data)
+	if c.last.item != 1 {
+		t.Fatalf("Last Data should be 1 got %v", c.last.item)
 	}
 	if c.Size() != 2 {
 		t.Fatalf("Size should be 2 got %v", c.Size())
@@ -64,17 +64,17 @@ func TestSet3(t *testing.T) {
 	c.set("B", 2)
 	// C | B
 	c.set("C", 3)
-	if c.first.Key != "C" {
-		t.Fatalf("First Key should be C got %v", c.first.Key)
+	if c.first.key != "C" {
+		t.Fatalf("First Key should be C got %v", c.first.key)
 	}
-	if c.first.Data != 3 {
-		t.Fatalf("First Data should be 3 got %v", c.first.Data)
+	if c.first.item != 3 {
+		t.Fatalf("First Data should be 3 got %v", c.first.item)
 	}
-	if c.last.Key != "B" {
-		t.Fatalf("Last Key should be B got %v", c.last.Key)
+	if c.last.key != "B" {
+		t.Fatalf("Last Key should be B got %v", c.last.key)
 	}
-	if c.last.Data != 2 {
-		t.Fatalf("Last Data should be 2 got %v", c.last.Data)
+	if c.last.item != 2 {
+		t.Fatalf("Last Data should be 2 got %v", c.last.item)
 	}
 	if c.Size() != 2 {
 		t.Fatalf("Size should be 2 got %v", c.Size())
@@ -86,168 +86,137 @@ func TestSet3(t *testing.T) {
 
 func TestAccess(t *testing.T) {
 	c := New(3)
-	// A
-	a := c.Access("A", 1)
-	if c.first != a {
-		t.Fatalf("first should be *a got %v", c.first)
+	c.Access("A", 1)
+	if c.first.item != 1 {
+		t.Fatalf("first should be 1 got %v", c.first.item)
 	}
-	if c.last != a {
-		t.Fatalf("last should be *a got %v", c.last)
+	if c.last.item != 1 {
+		t.Fatalf("last should be 1 got %v", c.last.item)
 	}
-	if a.next != nil {
-		t.Fatalf("next should be nil got %v", a.next)
+	if c.first.next != nil {
+		t.Fatalf("next should be nil got %v", c.first.next)
 	}
-	if a.pre != nil {
-		t.Fatalf("pre should be nil got %v", a.pre)
+	if c.first.pre != nil {
+		t.Fatalf("pre should be nil got %v", c.first.pre)
 	}
 	// B | A
-	b := c.Access("B", 2)
-	if c.first != b {
-		t.Fatalf("first should be *b got %v", c.first)
+	c.Access("B", 2)
+	if c.first.item != 2 {
+		t.Fatalf("first should be 2 got %v", c.first.item)
 	}
-	if c.last != a {
-		t.Fatalf("last should be *a got %v", c.last)
+	if c.last.item != 1 {
+		t.Fatalf("last should be 1 got %v", c.last.item)
 	}
-	if b.next != nil {
-		t.Fatalf("next should be nil got %v", b.next)
+	if c.first.next != nil {
+		t.Fatalf("next should be nil got %v", c.first.next)
 	}
-	if b.pre != a {
-		t.Fatalf("pre should be *a got %v", b.pre)
+	if c.first.pre.item != 1 {
+		t.Fatalf("pre should be 1 got %v", c.first.pre.item)
 	}
-	if a.next != b {
-		t.Fatalf("next should be *b got %v", a.next)
+	if c.last.next.item != 2 {
+		t.Fatalf("next should be 2 got %v", c.last.next.item)
 	}
-	if a.pre != nil {
-		t.Fatalf("pre should be nil got %v", a.pre)
+	if c.last.pre != nil {
+		t.Fatalf("pre should be nil got %v", c.last.pre)
 	}
-	// D | B | A
-	d := c.Access("D", 3)
-	if c.first != d {
-		t.Fatalf("first should be *d got %v", c.first)
+	// C | B | A
+	c.Access("C", 3)
+	if c.first.item != 3 {
+		t.Fatalf("first should be 3 got %v", c.first.item)
 	}
-	if c.last != a {
-		t.Fatalf("last should be *a got %v", c.last)
+	if c.last.item != 1 {
+		t.Fatalf("last should be 1 got %v", c.last.item)
 	}
-	if d.next != nil {
-		t.Fatalf("next should be nil got %v", d.next)
+	if c.first.next != nil {
+		t.Fatalf("next should be nil got %v", c.first.next)
 	}
-	if d.pre != b {
-		t.Fatalf("pre should be *b got %v", d.pre)
+	if c.first.pre.item != 2 {
+		t.Fatalf("pre should be *b got %v", c.first.pre.item)
 	}
-	if b.next != d {
-		t.Fatalf("next should be *d got %v", b.next)
+	if c.last.next.item != 2 {
+		t.Fatalf("next should be 2 got %v", c.last.next.item)
 	}
-	if b.pre != a {
-		t.Fatalf("pre should be *a got %v", b.pre)
+	if c.last.pre != nil {
+		t.Fatalf("pre should be nil got %v", c.last.pre)
 	}
-	if a.next != b {
-		t.Fatalf("next should be *b got %v", a.next)
+	// B | C | A
+	c.Access("B", 2)
+	if c.first.item != 2 {
+		t.Fatalf("first should be 2 got %v", c.first.item)
 	}
-	if a.pre != nil {
-		t.Fatalf("pre should be nil got %v", a.pre)
+	if c.last.item != 1 {
+		t.Fatalf("last should be 1 got %v", c.last.item)
 	}
-	// B | D | A
-	b = c.Access("B", 2)
-	if c.first != b {
-		t.Fatalf("first should be *b got %v", c.first)
+	if c.first.next != nil {
+		t.Fatalf("next should be nil got %v", c.first.next)
 	}
-	if c.last != a {
-		t.Fatalf("last should be *a got %v", c.last)
+	if c.first.pre.item != 3 {
+		t.Fatalf("pre should be 3 got %v", c.first.pre.item)
 	}
-	if b.next != nil {
-		t.Fatalf("next should be nil got %v", b.next)
+	if c.last.next.item != 3 {
+		t.Fatalf("next should be 3 got %v", c.last.next.item)
 	}
-	if b.pre != d {
-		t.Fatalf("pre should be *d got %v", b.pre)
+	if c.last.pre != nil {
+		t.Fatalf("pre should be nil got %v", c.last.pre)
 	}
-	if d.next != b {
-		t.Fatalf("next should be *b got %v", d.next)
+	// D | B | C
+	c.Access("D", 4)
+	if c.first.item != 4 {
+		t.Fatalf("first should be 4 got %v", c.first.item)
 	}
-	if d.pre != a {
-		t.Fatalf("pre should be *a got %v", d.pre)
+	if c.last.item != 3 {
+		t.Fatalf("last should be 1 got %v", c.last.item)
 	}
-	if a.next != d {
-		t.Fatalf("next should be *d got %v", a.next)
+	if c.first.next != nil {
+		t.Fatalf("next should be nil got %v", c.first.next)
 	}
-	if a.pre != nil {
-		t.Fatalf("pre should be nil got %v", a.pre)
+	if c.first.pre.item != 2 {
+		t.Fatalf("pre should be 2 got %v", c.first.pre.item)
 	}
-	// E | B | D
-	e := c.Access("E", 4)
-	if c.first != e {
-		t.Fatalf("first should be *e got %v", c.first)
+	if c.last.next.item != 2 {
+		t.Fatalf("next should be 2 got %v", c.last.next.item)
 	}
-	if c.last != d {
-		t.Fatalf("last should be *a got %v", c.last)
+	if c.last.pre != nil {
+		t.Fatalf("pre should be nil got %v", c.last.pre)
 	}
-	if e.next != nil {
-		t.Fatalf("next should be nil got %v", e.next)
+	// C | D | B
+	c.Access("C", 3)
+	if c.first.item != 3 {
+		t.Fatalf("first should be 3 got %v", c.first.item)
 	}
-	if e.pre != b {
-		t.Fatalf("pre should be *b got %v", e.pre)
+	if c.last.item != 2 {
+		t.Fatalf("last should be 2 got %v", c.last.item)
 	}
-	if b.next != e {
-		t.Fatalf("next should be *e got %v", b.next)
+	if c.first.next != nil {
+		t.Fatalf("next should be nil got %v", c.first.next)
 	}
-	if b.pre != d {
-		t.Fatalf("pre should be *d got %v", b.pre)
+	if c.first.pre.item != 4 {
+		t.Fatalf("pre should be 4 got %v", c.first.pre.item)
 	}
-	if d.next != b {
-		t.Fatalf("next should be *b got %v", d.next)
+	if c.last.next.item != 4 {
+		t.Fatalf("next should be 4 got %v", c.last.next.item)
 	}
-	if d.pre != nil {
-		t.Fatalf("pre should be nil got %v", d.pre)
+	if c.last.pre != nil {
+		t.Fatalf("pre should be nil got %v", c.last.pre)
 	}
-	// D | E | B
-	d = c.Access("D", 3)
-	if c.first != d {
-		t.Fatalf("first should be *d got %v", c.first)
+	// C | D | B
+	c.Access("C", 3)
+	if c.first.item != 3 {
+		t.Fatalf("first should be 3 got %v", c.first.item)
 	}
-	if c.last != b {
-		t.Fatalf("last should be *b got %v", c.last)
+	if c.last.item != 2 {
+		t.Fatalf("last should be 2 got %v", c.last.item)
 	}
-	if d.next != nil {
-		t.Fatalf("next should be nil got %v", d.next)
+	if c.first.next != nil {
+		t.Fatalf("next should be nil got %v", c.first.next)
 	}
-	if d.pre != e {
-		t.Fatalf("pre should be *e got %v", d.pre)
+	if c.first.pre.item != 4 {
+		t.Fatalf("pre should be 4 got %v", c.first.pre.item)
 	}
-	if e.next != d {
-		t.Fatalf("next should be *d got %v", e.next)
+	if c.last.next.item != 4 {
+		t.Fatalf("next should be 4 got %v", c.last.next.item)
 	}
-	if e.pre != b {
-		t.Fatalf("pre should be *b got %v", e.pre)
-	}
-	if b.next != e {
-		t.Fatalf("next should be *e got %v", b.next)
-	}
-	if b.pre != nil {
-		t.Fatalf("pre should be nil got %v", b.pre)
-	}
-	// D | E | B
-	d = c.Access("D", 3)
-	if c.first != d {
-		t.Fatalf("first should be *d got %v", c.first)
-	}
-	if c.last != b {
-		t.Fatalf("last should be *b got %v", c.last)
-	}
-	if d.next != nil {
-		t.Fatalf("next should be nil got %v", d.next)
-	}
-	if d.pre != e {
-		t.Fatalf("pre should be *e got %v", d.pre)
-	}
-	if e.next != d {
-		t.Fatalf("next should be *d got %v", e.next)
-	}
-	if e.pre != b {
-		t.Fatalf("pre should be *b got %v", e.pre)
-	}
-	if b.next != e {
-		t.Fatalf("next should be *e got %v", b.next)
-	}
-	if b.pre != nil {
-		t.Fatalf("pre should be nil got %v", b.pre)
+	if c.last.pre != nil {
+		t.Fatalf("pre should be nil got %v", c.last.pre)
 	}
 }
