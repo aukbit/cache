@@ -31,7 +31,7 @@ func New(capacity int) *Cache {
 
 // Access operation inserts the item onto the Cache if it’s not already present.
 func (c *Cache) Access(key string, i Item) {
-	item := c.get(key)
+	item := c.Get(key)
 	if item == nil {
 		c.set(key, i)
 	}
@@ -49,9 +49,9 @@ func (c *Cache) Remove() Item {
 	return c.last.item
 }
 
-// get operation shifts the item to the first position on Cache if it’s already present.
+// Get operation shifts the item to the first position on Cache if it’s already present.
 // Otherwise returns nil.
-func (c *Cache) get(key string) Item {
+func (c *Cache) Get(key string) Item {
 	// if not present returns nil
 	n, ok := c.hash[key]
 	if !ok {
