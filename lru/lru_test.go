@@ -223,6 +223,96 @@ func TestAccess(t *testing.T) {
 	if c.last.pre != nil {
 		t.Fatalf("pre should be nil got %v", c.last.pre)
 	}
+	// D | B
+	c.Del("C")
+	if c.first.item != 4 {
+		t.Fatalf("first should be 4 got %v", c.first.item)
+	}
+	if c.last.item != 2 {
+		t.Fatalf("last should be 2 got %v", c.last.item)
+	}
+	if c.first.next != nil {
+		t.Fatalf("next should be nil got %v", c.first.next)
+	}
+	if c.first.pre.item != 2 {
+		t.Fatalf("pre should be 2 got %v", c.first.pre.item)
+	}
+	if c.last.next.item != 4 {
+		t.Fatalf("next should be 4 got %v", c.last.next.item)
+	}
+	if c.last.pre != nil {
+		t.Fatalf("pre should be nil got %v", c.last.pre)
+	}
+	// C | D | B
+	c.Access("C", 3)
+	if c.first.item != 3 {
+		t.Fatalf("first should be 3 got %v", c.first.item)
+	}
+	if c.last.item != 2 {
+		t.Fatalf("last should be 2 got %v", c.last.item)
+	}
+	if c.first.next != nil {
+		t.Fatalf("next should be nil got %v", c.first.next)
+	}
+	if c.first.pre.item != 4 {
+		t.Fatalf("pre should be 4 got %v", c.first.pre.item)
+	}
+	if c.last.next.item != 4 {
+		t.Fatalf("next should be 4 got %v", c.last.next.item)
+	}
+	if c.last.pre != nil {
+		t.Fatalf("pre should be nil got %v", c.last.pre)
+	}
+	// C | B
+	c.Del("D")
+	if c.first.item != 3 {
+		t.Fatalf("first should be 3 got %v", c.first.item)
+	}
+	if c.last.item != 2 {
+		t.Fatalf("last should be 2 got %v", c.last.item)
+	}
+	if c.first.next != nil {
+		t.Fatalf("next should be nil got %v", c.first.next)
+	}
+	if c.first.pre.item != 2 {
+		t.Fatalf("pre should be 2 got %v", c.first.pre.item)
+	}
+	if c.last.next.item != 3 {
+		t.Fatalf("next should be 3 got %v", c.last.next.item)
+	}
+	if c.last.pre != nil {
+		t.Fatalf("pre should be nil got %v", c.last.pre)
+	}
+	// C
+	c.Del("B")
+	if c.first.item != 3 {
+		t.Fatalf("first should be 3 got %v", c.first.item)
+	}
+	if c.last.item != 3 {
+		t.Fatalf("last should be 3 got %v", c.last.item)
+	}
+	if c.first.next != nil {
+		t.Fatalf("first next should be nil got %v", c.first.next)
+	}
+	if c.first.pre != nil {
+		t.Fatalf("first pre should be nil got %v", c.first.pre)
+	}
+	if c.last.next != nil {
+		t.Fatalf("last next should be nil got %v", c.last.next)
+	}
+	if c.last.pre != nil {
+		t.Fatalf("last pre should be nil got %v", c.last.pre)
+	}
+	c.Del("C")
+	if c.Size() != 0 {
+		t.Fatalf("size should be 0 got %v", c.Size())
+	}
+	if c.first != nil {
+		t.Fatalf("first should be nil got %v", c.first)
+	}
+	if c.last != nil {
+		t.Fatalf("last should be nil got %v", c.last)
+	}
 }
 
 func TestIterator(t *testing.T) {

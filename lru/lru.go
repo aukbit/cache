@@ -71,6 +71,27 @@ func (c *Cache) Get(key string) Item {
 	return n.item
 }
 
+// Del operation removes the key from Cache if it’s already present.
+func (c *Cache) Del(key string) {
+	// if not present returns nil
+	n, ok := c.hash[key]
+	if !ok {
+		return
+	}
+	// detach item from the linked list
+	next := n.next
+	pre := n.pre
+	c.detach(n)
+	if c.last == n {
+		c.last = next
+	}
+	if c.first == n {
+		c.first = pre
+	}
+	delete(c.hash, key)
+	c.n--
+}
+
 // set operation inserts the item onto the Cache and removes the
 // least recently used if cache is full. The least recently used item is the one
 // in the last position.
